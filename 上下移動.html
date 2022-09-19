@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>スマイル君移動</title>
+    </head>
+    <BODY bgcolor="skyblue">
+        <img id="smile" src="images/smile01.png" height="70px" width="70px"
+        style="position: absolute;top: 100px;left: 100px;">
+        <input type="button" value="上" onclick="up()">
+        <input type="button" value="右" onclick="right()">
+        <input type="button" value="下" onclick="down()">
+        <input type="button" value="左" onclick="left()">
+        <input type="button" value="停止" onclick="stop()">
+        <script>
+            var x=100,y=100;
+            var smiletimer=null;
+            var smile=document.getElementById("smile");
+            function up(){   
+                
+                y=y-1;
+                smile.style.top=y+"px";
+                if(!smiletimer)
+                    smiletimer=setInterval(up,1);
+            }
+            function right(){   
+                
+                x=x+1;
+                smile.style.left=x+"px";
+                if(!smiletimer)
+                    smiletimer=setInterval(right,1);
+            }
+            function down(){   
+                
+                y=y+1;
+                smile.style.top=y+"px";
+                if(!smiletimer)
+                    smiletimer=setInterval(down,1);
+            }
+            function left(){   
+                
+                x=x-1;
+                smile.style.left=x+"px"
+                if(!smiletimer)
+                    smiletimer=setInterval(left,1);
+            }
+            function stop(){
+                clearInterval(smiletimer);
+                smiletimer=null;
+            }
+            
+        </script>
+
+    </BODY>
+
+</html>

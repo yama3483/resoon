@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>風船割り</title>
+</head>
+
+<body style="background-color: floralwhite;">
+    <img id="fuusen" src="images/fuusen.png" height="80px" width="40px" style="position:absolute;left:700px;top:150px;">
+    <img id="kougeki" src="images/kougeki.png" height="30px" width="30px"
+        style="position: absolute;left: 0px;top: 0px;">
+    <img id="kikyuu" src="images/kikyuu.png" height="250px" width="200px"
+        style="position: absolute;left: 50px;top:300px;">
+    <img id="atari" src="images/atari.png" height="80px" width="40px" style="position: absolute; left: 0px;top: 0px;">
+    <img id="fuusen2" src="images/fuusen.png" height="80px" width="40px" style="position:absolute;left:0px;top:0px;">
+
+    <input type="button" value="攻撃" onclick="kougeki()"
+        style="position: absolute; height: 50px;width: 100px;top: 630px;left: 400px;font-size: 26px;">
+    <input type="button" value="上空へ" onclick="kikyuu_up()"
+        style="position: absolute; height: 50px;width: 100px;top: 630px;left: 550px;font-size: 26px;">
+
+    <input type="button" value="下空へ" onclick="kikyuu_down()"
+        style="position: absolute; height: 50px;width: 100px;top: 630px;left: 700px;font-size: 26px;">
+
+    <div id="ten"
+        style="position: absolute;top: 630px;left: 850px;font-size: 26px;  height: 50px;width: 100px; background-color: #ffff00;border: #000000;">
+        得点0点</div>
+
+    <script>
+        //変数
+        var f_x = 700, f_y = 150;
+        var k_x, k_y;
+        var kiky_x = 50, kiky_y = 300;
+
+        var f_timer = null;
+        var k_timer = null;
+        var kiky_timer = null;
+        var atari_timer = null;
+        var kiky_sw;
+
+        //画像
+        var f_img = document.getElementById("fuusen");
+        var k_img = document.getElementById("kougeki");
+        var kiky_img = document.getElementById("kikyuu");
+        var atari_img = document.getElementById("atari");
+        var f2_img = document.getElementById("fuusen2");
+
+        //音声
+        var s = new Audio();
+        s.src = "medias/sound02.wav";
+
+        var ten = document.getElementById("ten");
+        var tokuten = 0;
+
+        k_img.style.visibility = "hidden";
+        atari_img.style.visibility = "hidden";
+        f2_img.style.visibility = "hidden";
+
+        f_timer = setInterval(f_do, 50);
+
+        //風船が動く
+        function f_do() {
+
+            var wk_x, wk_y;
+            if (Math.floor(2 * Math.random()) == 1)
+                wk_x = Math.round(70 * Math.random());
+            else
+                wk_x = -1 * Math.round(70 * Math.random());
+
+            if ((f_x + wk_x) > 500 && (f_x + wk_x) < 900)
+                f_x = f_x + wk_x;
+
+            //y
+            if (Math.floor(2 * Math.random()) == 1)
+                wk_y = Math.round(70 * Math.random());
+            else
+                wk_y = -1 * Math.round(70 * Math.random());
+
+            if ((f_y + wk_y) > 0 && (f_y + wk_y) < 360)
+                f_y = f_y + wk_y;
+
+            //実際に値を変える
+            f_img.style.left = f_x + "px";
+            f_img.style.top = f_y + "px";
+        }
+
+        //攻撃
+        function kougeki() {
+
+            k_img.style.visibility = "visible";
+
+            if (k_timer == null) {
+                k_x = kiky_x + 150;
+                k_y = kiky_y + 210;
+                k_img.style.top = k_y + "px";
+                k_timer = setInterval(kougeki, 1);
+                clearInterval(kiky_timer)
+                kiky_timer = null;
+            }
+            else {
+
+                k_x = k_x + 2;
+                k_img.style.left = k_x + "px";
+            }
+            // 端っこに行ったら
+            if (k_x > 1000) {
+                clearInterval(k_timer)
+                k_timer = null;
+                k_img.style.visibility = "hidden";
+            }
+            //衝突したら
+            if (Math.abs(k_x - f_x) <= 50 && Math.abs(k_y - f_y) <= 50) {
+                clearInterval(k_timer)
+                k_timer = null;
+                k_img.style.visibility = "hidden";
+                anime();
+            }
+        }
+        function anime() {
+            if (atari_timer == null) {
+                atari_img.style.left = f_x + "px";
+                atari_img.style.top = f_y + "px";
+                atari_img.style.visibility = "visible";
+                f_img.style.visibility = "hidden";
+                atari_timer = setInterval(anime, 1000);
+            }
+            else {
+                clearInterval(atari_timer)
+                atari_timer = null;
+                //風船の初期化
+                f_x = 700;
+                f_y = 150;
+                f_img.style.left = f_x + "px";
+                f_img.style.top = f_y + "px";
+                f_img.style.visibility = "visible";
+                atari_img.style.visibility = "hidden";
+                tokuten++;
+                //点数加算
+                ten.innerHTML = "得点" + tokuten + "点";
+            }
+        }
+
+
+        function kikyuu_up() {
+            kiky_y = kiky_y - 1;
+
+            kiky_img.style.top = kiky_y + "px";
+            kiky_sw = 2;
+
+            if (kiky_sw != 1) {
+                clearInterval(kiky_timer);
+                kiky_timer = null
+            }
+            if (kiky_timer == null)
+                kiky_timer = setInterval(kikyuu_up, 10);
+
+        }
+
+        function kikyuu_down() {
+            kiky_y = kiky_y + 1;
+            kiky_img.style.top = kiky_y + "px";
+            kiky_sw = 1;
+            if (kiky_sw != 2) {
+                clearInterval(kiky_timer);
+                kiky_timer = null
+
+            }
+            if (kiky_timer == null) {
+                kiky_timer = setInterval(kikyuu_down, 10);
+                kiky_sw = kiky_timer;
+            }
+        }
+    </script>
+</body>
+
+</html>
